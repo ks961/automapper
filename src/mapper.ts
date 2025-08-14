@@ -10,9 +10,9 @@ export class Mapper<S, D> {
         private dest: Ctor<D>
     ) {}
 
-    forMember(
-        member: keyof WithoutFunctionProps<D>,
-        transformer: TransformerFn<S, D[keyof D]>
+    forMember<K extends keyof WithoutFunctionProps<D>>(
+        member: K,
+        transformer: TransformerFn<S, D[K]>
     ) {
         this.memberMap.set(member, transformer);
         return this;
