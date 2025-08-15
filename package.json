@@ -11,7 +11,18 @@
     "build:cjs": "tsc -p tsconfig.cjs.json"
   },
   "keywords": [
-    "automapper"
+    "typescript",
+    "decorator",
+    "dto",
+    "validation",
+    "data-validation",
+    "class-validator",
+    "automapper",
+    "object-mapping",
+    "data-mapping",
+    "field-validation",
+    "custom-validation",
+    "mapping-library"
   ],
   "author": "Sudhanshu",
   "license": "MIT",

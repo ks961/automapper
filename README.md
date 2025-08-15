@@ -1,8 +1,10 @@
 # 🔄 AutoMapper Utility
 
-AutoMapper is a lightweight TypeScript utility designed to automate the transformation of objects between DTOs and Entities. It provides an easy way to map data between classes, ensuring that your data transformation code is cleaner and more maintainable.
+AutoMapper is a lightweight TypeScript utility designed to automate the transformation of objects between DTOs and Entities. It simplifies mapping between classes with matching or custom field names, keeping data transformation code clean and maintainable.
 
-It also includes a JsonObject base class for easy conversion of class instances to/from JSON.
+In addition to object mapping, it also supports **decorator-based DTO validation** at instantiation time, allowing you to enforce field-level rules such as `@Required`, `@Email`, `@StringLength`, and more. Validation errors throw a clear `ValidationFailedError` with the field name and message.
+
+Includes a `JsonObject` base class for easily converting class instances to and from plain object literals (JSON-compatible structures).
 
 ---
 
