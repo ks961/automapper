@@ -7,6 +7,20 @@ import type {
     WithoutFunctionProps
 } from "./types";
 
+import {
+    DTO,
+    Email,
+    Regex,
+    Required,
+    CustomFn,
+    Password,
+    StringLength,
+} from "./decorators";
+
+import {
+    ValidationFailedError
+} from "./error-classes"
+
 export {
     Mapper,
     JsonObject,
@@ -14,4 +28,15 @@ export {
     Ctor,
     TransformerFn,
     WithoutFunctionProps
+}
+
+export {
+    DTO,
+    Email,
+    Regex,
+    Required,
+    CustomFn,
+    Password,
+    StringLength,
+    ValidationFailedError
 }
