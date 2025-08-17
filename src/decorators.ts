@@ -1,8 +1,7 @@
 import { ValidationFailedError } from "./error-classes";
 import { validateCustomFnParams, validateRegexParams, validateStringLengthParams } from "./validators";
 import { Ctor, EmptyValidationError, ErrorMsg, LengthValidationError, RegexValidationError, RequiredParamInfo, TypeValidationError, WithoutFunctionProps } from "./types";
-import { isEmpty, regexEqual } from "./utils";
-import { JsonObject } from "./json-object";
+import { regexEqual } from "./utils";
 
 const REGEX_PARAMS         = Symbol("REGEX_PARAMS");
 const REQUIRED_PARAMS      = Symbol("REQUIRED_PARAMS");
