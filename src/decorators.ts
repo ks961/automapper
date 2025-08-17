@@ -122,7 +122,7 @@ export function Password(
 
 export type ErrorString = string;
 export type CustomFn<T = unknown> = 
-    (value: T) => (boolean | ErrorString);
+    (value: T, body?: unknown) => (boolean | ErrorString);
 
 export type CustomFnParamInfo = {
     index: number,
@@ -270,9 +270,17 @@ export function DTO<T extends Ctor<{}>>(
             ...args: any
         ) {
             const customFnParams = (constructor as any)[CUSTOM_FN_PARAMS] as CustomFnParamInfo[];
+
+            const paramsInfo = args.reduce((acc: Record<string, unknown>, value: unknown, idx: number) => {
+                const param = this.__params__[idx];
+                acc[param] = value;
+                return acc;
+            }, {} as Record<string, unknown>);
+
             const customFnValidationInfo = validateCustomFnParams(
-                customFnParams, 
-                this.__requiredParams__, 
+                customFnParams,
+                paramsInfo,
+                this.__requiredParams__,
                 ...args
             );
 
@@ -285,44 +293,4 @@ export function DTO<T extends Ctor<{}>>(
             }
         }
     };
-}
-
-@DTO
-class User extends JsonObject<User> {
-    constructor(
-        @Required()
-        @StringLength(5)
-        public name?: string,
-        
-        @Required()
-        @Email()
-        public email?: string,
-
-        @Password()
-        public password?: string,
-
-        @Regex(/^\+43/)
-        public phone?: string,
-
-        @CustomFn((value: unknown) => {
-            if(typeof value === "string") {
-                const [ dd, mm, yyyy ] = value.split("/").map(Number);
-                if(
-                    isEmpty(dd) || isEmpty(mm) || isEmpty(yyyy)
-                ) {
-                    return "Invalid date format";
-                }
-                if(dd < 1 && dd > 31 || mm < 1 && mm > 12 || yyyy < 1900 && yyyy > new Date().getFullYear()) {
-                    return "Invalid date."
-                }
-
-                return true;
-            }
-
-            return "Invalid data type for date."
-        })
-        public birthDate?: string
-    ) {
-        super();
-    }
 }

@@ -408,6 +408,22 @@ If it returns `true`, validation passes.
 If it returns a string, that string is used as the error message.
 
 ```ts
+/**
+ * Custom field validation function.
+ *
+ * Parameters:
+ * - `value`: The data for the current field being validated.
+ * - `body` : The entire payload passed to the constructor.
+ *
+ * Notes:
+ * - `body` can be used to perform cross-field validations and more.
+ * - Fields are validated in order, so any fields appearing before the current one
+ *   have already passed validation and can be safely referenced.
+ */
+export type CustomFn<T = unknown> = (value: T, body?: unknown) => boolean | ErrorString;
+```
+
+```ts
 @DTO
 class User extends JsonObject<User> {
   constructor(
@@ -443,6 +459,55 @@ try {
 }
 ```
 
+```ts
+// Referencing example 
+@DTO
+class User extends JsonObject<User> {
+    constructor(
+        @Required()
+        @StringLength(4)
+        public password?: string,
+
+        @CustomFn((value: unknown, body?: unknown) => {
+
+            const userBody = body as any;
+            const confirmPassword = value as string;
+
+            if (typeof confirmPassword !== 'string') {
+                return "Invalid confirm password field data.";
+            }
+
+            if (userBody?.password !== confirmPassword) {
+                return "Confirm Password and Password do not match.";
+            }
+
+            return true;
+        })
+        public confirmPassword?: string
+    ) {
+        super();
+    }
+}
+
+new User("password", "password"); // // ✅ Passes
+
+try {
+
+  new User("password", "differentPassword"); // // ❌ will fail.
+
+} catch(err: unknown) {
+  if(err instanceof ValidationFailedError) {
+    console.log(err.field, err.message);
+  }
+}
+
+
+/**
+ * Note:
+ *  - Always wrap your constructor with try-catch
+*/
+```
+
 ---
 
 ### **Error Types**
@@ -454,7 +519,9 @@ try {
    * `field`: the name of the invalid field
    * `message`: the error message
 2. **Native `Error`**
-   May be thrown by your own code inside a custom validator.
+   Also thrown when a value does not meet validator constraints.
+   
+   * For example, in `StringLength(min, max)`, if `max < min`, an error will be thrown with a descriptive message.
 
 ---
 

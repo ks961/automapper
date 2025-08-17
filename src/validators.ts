@@ -86,6 +86,7 @@ export function validateStringLengthParams(
 
 export function validateCustomFnParams(
     paramIndexes: CustomFnParamInfo[],
+    paramsInfo: Record<string, unknown>,
     requiredParams: RequiredParamInfo,
     ...args: any
 ) {
@@ -105,7 +106,7 @@ export function validateCustomFnParams(
             continue;
         }
 
-        const state = fn(value);
+        const state = fn(value, paramsInfo);
 
         if(typeof state === "string") {
             return {
