@@ -489,11 +489,11 @@ class User extends JsonObject<User> {
     }
 }
 
-new User("password", "password"); // // ✅ Passes
+new User("password", "password"); // ✅ Passes
 
 try {
 
-  new User("password", "differentPassword"); // // ❌ will fail.
+  new User("password", "differentPassword"); // ❌ will fail.
 
 } catch(err: unknown) {
   if(err instanceof ValidationFailedError) {
