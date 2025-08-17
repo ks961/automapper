@@ -163,24 +163,47 @@ export function DTO<T extends Ctor<{}>>(
 
             this.__requiredParams__ = (constructor as any)[REQUIRED_PARAMS] as RequiredParamInfo || {};
 
-            this.__handleRegexValidation__(
-                ...args,
-            )
+            const regexParams = (constructor as any)[REGEX_PARAMS] as RegExParamInfo[];
 
-            this.__handleStringValidation__(
-                ...args,
-            );
+            if(regexParams?.length > 0) {
+                this.__handleRegexValidation__(
+                    regexParams,
+                    ...args,
+                )
+            }
 
-            this.__handleCustomFnValidation__(
-                ...args
-            );
+            const stringLengthParams = (constructor as any)[STRING_LENGTH_PARAMS] as StringLengthParamInfo[];
+
+            if(stringLengthParams?.length > 0) {
+                this.__handleStringValidation__(
+                    stringLengthParams,
+                    ...args,
+                );
+            } 
+
+            const customFnParams = (constructor as any)[CUSTOM_FN_PARAMS] as CustomFnParamInfo[];
+
+            if(customFnParams?.length > 0) {
+                const paramsInfo = args.reduce((acc: Record<string, unknown>, value: unknown, idx: number) => {
+                    const param = this.__params__[idx];
+                    acc[param] = value;
+                    return acc;
+                }, {} as Record<string, unknown>);
+    
+                this.__handleCustomFnValidation__(
+                    customFnParams,
+                    paramsInfo,
+                    ...args
+                );
+            }
+
         }
 
         __handleStringValidation__(
+            stringLengthParams: StringLengthParamInfo[],
             ...args: any
         ) {
-            const stringLengthParams = (constructor as any)[STRING_LENGTH_PARAMS] as StringLengthParamInfo[];
-            
+
             const validationInfo = validateStringLengthParams(
                 stringLengthParams, 
                 this.__requiredParams__,
@@ -221,9 +244,9 @@ export function DTO<T extends Ctor<{}>>(
         }
 
         __handleRegexValidation__(
+            regexParams: RegExParamInfo[],
             ...args: any
         ) {
-            const regexParams = (constructor as any)[REGEX_PARAMS] as RegExParamInfo[];
             const regexValidationInfo = validateRegexParams(
                 regexParams, 
                 this.__requiredParams__, 
@@ -266,15 +289,10 @@ export function DTO<T extends Ctor<{}>>(
         }
 
         __handleCustomFnValidation__(
+            customFnParams: CustomFnParamInfo[],
+            paramsInfo: Record<string, unknown>,
             ...args: any
         ) {
-            const customFnParams = (constructor as any)[CUSTOM_FN_PARAMS] as CustomFnParamInfo[];
-
-            const paramsInfo = args.reduce((acc: Record<string, unknown>, value: unknown, idx: number) => {
-                const param = this.__params__[idx];
-                acc[param] = value;
-                return acc;
-            }, {} as Record<string, unknown>);
 
             const customFnValidationInfo = validateCustomFnParams(
                 customFnParams,
