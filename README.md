@@ -417,8 +417,6 @@ If it returns a string, that string is used as the error message.
  *
  * Notes:
  * - `body` can be used to perform cross-field validations and more.
- * - Fields are validated in order, so any fields appearing before the current one
- *   have already passed validation and can be safely referenced.
  */
 export type CustomFn<T = unknown> = (value: T, body?: unknown) => boolean | ErrorString;
 ```
